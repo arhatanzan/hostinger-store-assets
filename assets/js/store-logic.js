@@ -115,6 +115,10 @@ function initStore() {
       const dynamicTags = renderTags(p);
       const metadataBlock = renderMetadata(p);
       const primaryBtn = renderPrimaryAction(p);
+      
+      // Handle the line breaks cleanly for front and back
+      const cleanFrontDesc = escapeHtml(getSummary(p)).replace(/\\n|\n/g, " ");
+      const cleanBackDesc = escapeHtml(p.description).replace(/\\n|\n/g, "<br>");
 
       card.innerHTML = `
       <div class="card-inner">
@@ -123,14 +127,14 @@ function initStore() {
           <h3 class="title"><span>${escapeHtml(p.title)}</span></h3>
           <div class="tags"><span class="tag">${escapeHtml(p.category)}</span>${dynamicTags}</div>
           ${metadataBlock}
-          <p class="desc">${escapeHtml(getSummary(p))}</p>
+          <p class="desc">${cleanFrontDesc}</p>
           <div class="card-footer">
             <div class="primary-wrap">${primaryBtn}</div>
             <div class="actions"><button class="details-btn">Details</button></div>
           </div>
         </div>
         <div class="card-back">
-          <p class="desc">${escapeHtml(p.description)}</p>
+          <p class="desc">${cleanBackDesc}</p>
           <div class="card-footer">
             <div class="primary-wrap">${primaryBtn}</div>
             <div class="actions"><button class="back-btn">Back</button></div>
