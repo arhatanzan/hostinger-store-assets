@@ -1,0 +1,82 @@
+<style> body, html { min-height: 800px; } </style>
+
+<!-- Load Unified Styles -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/arhatanzan/hostinger-store-assets@main/assets/css/store-style.css">
+
+<!-- Generic HTML Container -->
+<div class="prod-wrap" aria-live="polite">
+  <div class="prod-header">
+    <div class="prod-title">
+      <h1 id="pageH1">Digital & Physical Products</h1>
+      <div id="pageDesc" class="prod-sub">Instant downloads + external store products - No Sign Required</div>
+    </div>
+    <div class="prod-controls" id="controls">
+      <div class="search"><input id="searchInput" placeholder="Search products..." /></div>
+      <div class="controls-row">
+        <select id="categorySelect" class="select"><option value="">All Categories</option></select>
+        <select id="filter2Select" class="select"><option value="">All Prices</option></select>
+        <select id="pageSizeSelect" class="select" style="display:none;"><option value="all">All</option></select>
+        <select id="sortSelect" class="select">
+          <option value="new">Newest</option><option value="az">A &rarr; Z</option><option value="za">Z &rarr; A</option>
+        </select>
+        <button id="resetBtn" class="btn">Reset</button>
+      </div>
+    </div>
+  </div>
+  <div id="grid" class="grid"></div>
+  <div id="empty" class="empty" style="display: none">No items found.</div>
+  <div id="pagination" class="pagination-wrap" style="display: none"></div>
+</div>
+<button id="goTopBtn" aria-label="Go to top">↑ Top</button>
+
+<!-- Configure the Logic for Products -->
+<script>
+  window.APP_CONFIG = {
+    sheetId: "1UIpV8mZ21NTqJUWMbw5NK1V4cWFjuTbRUxpxlvOWljk",
+    sheetName: "Products", 
+    itemLabel: "products",
+
+    getFilter2Value: (p) => {
+      const orig = Number(String(p.originalPrice || "").replace(/,/g, ""));
+      const disc = Number(p.discountPercent);
+      if (isNaN(orig)) return "";
+      const isFree = (orig === 0) || (disc === 100);
+      return isFree ? "free" : "paid";
+    },
+
+    renderTags: (p) => {
+      const status = window.APP_CONFIG.getFilter2Value(p);
+      if (status === "free") return `<span class="label-free">FREE</span>`;
+      if (status === "paid") return `<span class="label-paid">PAID</span>`;
+      return "";
+    },
+
+    renderMetadata: (p) => {
+      const orig = Number(String(p.originalPrice || "").replace(/,/g, ""));
+      const disc = Number(p.discountPercent);
+      const curr = p.priceCurrency || "INR";
+      
+      if (isNaN(orig)) return "";
+      
+      const format = (n) => new Intl.NumberFormat(curr === "INR" ? "en-IN" : "en-US", { style: "currency", currency: curr }).format(n);
+
+      if (!isNaN(disc) && disc > 0) {
+         const priceNow = +(orig * (1 - disc / 100)).toFixed(2);
+         return `<div class="price-row">
+                   <span class="price-old">${format(orig)}</span>
+                   <span class="price-now">${disc === 100 ? "FREE" : format(priceNow)}</span>
+                   <span class="discount-badge">${disc}% OFF</span>
+                 </div>`;
+      }
+      return `<div class="price-row"><span class="price-now">${format(orig)}</span></div>`;
+    },
+
+    renderPrimaryAction: (p) => {
+      const href = p.productUrl || "#";
+      const label = p.buttonLabel || "Buy Now";
+      return `<a class="download-btn" href="${href}" target="_blank">${label}</a>`;
+    }
+  };
+</script>
+<!-- Load Unified Logic -->
+<script src="https://cdn.jsdelivr.net/gh/arhatanzan/hostinger-store-assets@main/assets/js/store-logic.js"></script>

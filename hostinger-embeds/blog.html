@@ -1,0 +1,67 @@
+<style> body, html { min-height: 800px; } </style>
+
+<!-- Load Unified Styles -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/arhatanzan/hostinger-store-assets@main/store-style.css">
+
+<!-- Generic HTML Container -->
+<div class="prod-wrap" aria-live="polite">
+  <div class="prod-header">
+    <div class="prod-title">
+      <h1 id="pageH1">Articles & Essays</h1>
+      <div id="pageDesc" class="prod-sub">Exploring governance, psychology, journalism, politics, and activism.</div>
+    </div>
+    <div class="prod-controls" id="controls">
+      <div class="search"><input id="searchInput" placeholder="Search articles..." /></div>
+      <div class="controls-row">
+        <select id="categorySelect" class="select"><option value="">All Topics</option></select>
+        <select id="filter2Select" class="select"><option value="">Reading Length</option></select>
+        <select id="pageSizeSelect" class="select" style="display:none;"><option value="all">All</option></select>
+        <select id="sortSelect" class="select">
+          <option value="new">Newest</option><option value="az">A &rarr; Z</option><option value="za">Z &rarr; A</option>
+        </select>
+        <button id="resetBtn" class="btn">Reset</button>
+      </div>
+    </div>
+  </div>
+  <div id="grid" class="grid"></div>
+  <div id="empty" class="empty" style="display: none">No articles found.</div>
+  <div id="pagination" class="pagination-wrap" style="display: none"></div>
+</div>
+<button id="goTopBtn" aria-label="Go to top">↑ Top</button>
+
+<!-- Configure the Logic for Blogs -->
+<script>
+  window.APP_CONFIG = {
+    sheetId: "1UIpV8mZ21NTqJUWMbw5NK1V4cWFjuTbRUxpxlvOWljk",
+    sheetName: "Blogs", // Pointing to a new tab in your Google Sheet
+    itemLabel: "articles",
+
+    // Secondary dropdown filters by reading time (e.g., "5 min read", "Deep Dive")
+    getFilter2Value: (p) => p.readingLength || "",
+
+    // Tags show the reading length
+    renderTags: (p) => {
+      return p.readingLength ? `<span class="tag">${p.readingLength}</span>` : "";
+    },
+
+    // Metadata block shows the Author and Publish Date instead of price
+    renderMetadata: (p) => {
+      const author = p.author || "Guest";
+      const date = p.date || "";
+      return `<div style="font-size: 13px; color: var(--muted); margin-top: 8px;">
+                By <strong>${author}</strong> ${date ? `• ${date}` : ""}
+              </div>`;
+    },
+
+    // Dynamic button that changes depending on where the article is hosted
+    renderPrimaryAction: (p) => {
+      if (p.patreonLink) {
+         return `<a class="download-btn" style="background:#FF424D; color:white;" href="${p.patreonLink}" target="_blank">Read on Patreon</a>`;
+      }
+      const href = p.mediumLink || p.productUrl || "#";
+      return `<a class="download-btn" href="${href}" target="_blank">Read Article</a>`;
+    }
+  };
+</script>
+<!-- Load Unified Logic -->
+<script src="https://cdn.jsdelivr.net/gh/arhatanzan/hostinger-store-assets@main/store-logic.js"></script>
