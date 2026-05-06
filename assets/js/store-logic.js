@@ -67,16 +67,37 @@ function initStore() {
   /* --- HELPERS --- */
   function escapeHtml(s) { return (s || "").toString().replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
   function cap(s) { return (s || "").charAt(0).toUpperCase() + (s || "").slice(1); }
+  
   function getSummary(p) {
     const s = (p.description || "").toString().trim();
     return s.length > 140 ? s.slice(0, 140).trim() + "..." : s;
   }
+  
   function debounce(func, wait) {
     let timeout;
     return function(...args) {
       clearTimeout(timeout);
       timeout = setTimeout(() => func.apply(this, args), wait);
     };
+  }
+
+  // Restores Line Breaks and Bold Formatting for the Back of the Card
+  function formatBackDescription(text) {
+    if (!text) return "";
+    
+    // 1. Escape HTML first to keep things secure
+    let safeText = escapeHtml(text);
+    
+    // 2. Catch literal '\n' strings typed in sheets AND actual newlines, turn them to <br>
+    safeText = safeText.split("\\n").join("<br>").split("\n").join("<br>");
+    
+    // 3. Restore the automatic bolding for specific section headers
+    const keys = ["Problem:", "Key Learning:", "Outcome:", "Need:", "Goal:"];
+    keys.forEach(k => {
+      safeText = safeText.split(k).join(`<strong>${k}</strong>`);
+    });
+    
+    return safeText;
   }
 
   /* --- RENDERING ENGINE --- */
@@ -116,9 +137,11 @@ function initStore() {
       const metadataBlock = renderMetadata(p);
       const primaryBtn = renderPrimaryAction(p);
       
-      // Handle the line breaks cleanly for front and back
-      const cleanFrontDesc = escapeHtml(getSummary(p)).replace(/\\n|\n/g, " ");
-      const cleanBackDesc = escapeHtml(p.description).replace(/\\n|\n/g, "<br>");
+      // Clean front description (Strip slashes and newlines entirely)
+      let cleanFrontDesc = escapeHtml(getSummary(p)).split("\\n").join(" ").split("\n").join(" ");
+      
+      // Clean back description (Process line breaks and bold tags)
+      let cleanBackDesc = formatBackDescription(p.description);
 
       card.innerHTML = `
       <div class="card-inner">
