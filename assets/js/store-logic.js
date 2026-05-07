@@ -88,8 +88,13 @@ function initStore() {
     // 1. Escape HTML first to keep things secure
     let safeText = escapeHtml(text);
     
-    // 2. Catch literal '\n' strings typed in sheets AND actual newlines, turn them to <br>
-    safeText = safeText.split("\\n").join("<br>").split("\n").join("<br>");
+    // 2. Handle all newline variations and convert to <br>
+    // Handle escaped newlines: \\n -> <br> (from JSON strings with literal \n)
+    safeText = safeText.replace(/\\n/g, "<br>");
+    // Handle actual newline characters: \n -> <br>
+    safeText = safeText.replace(/\n/g, "<br>");
+    // Handle multiple consecutive <br> tags to preserve paragraph breaks (\n\n should become <br><br>)
+    // This is already handled by the above replacements
     
     // 3. Restore the automatic bolding for specific section headers
     const keys = ["Problem:", "Key Learning:", "Outcome:", "Need:", "Goal:"];
@@ -119,7 +124,7 @@ function initStore() {
 
     slice.forEach(p => {
       const card = document.createElement("div");
-      card.className = "card";
+      card.className = "card col-12 col-sm-6 col-md-4 col-lg-3";
 
       const fallbackText = escapeHtml(p.thumbText || p.category || itemLabel);
       let thumbHtml = `<div class="thumb" style="position: relative;">${fallbackText}</div>`;
@@ -129,7 +134,7 @@ function initStore() {
           <div class="thumb" style="position: relative;">
             <img src="${escapeHtml(p.imageUrl)}" loading="lazy" 
                  onerror="this.style.opacity='0'; this.parentElement.innerHTML='${fallbackText}';" 
-                 style="position: absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; transition: opacity 0.3s;">
+                 style="position: absolute; top:0; left:0; width:100%; height:100%; object-fit:contain; transition: opacity 0.3s;">
           </div>`;
       }
 
@@ -138,7 +143,7 @@ function initStore() {
       const primaryBtn = renderPrimaryAction(p);
       
       // Clean front description (Strip slashes and newlines entirely)
-      let cleanFrontDesc = escapeHtml(getSummary(p)).split("\\n").join(" ").split("\n").join(" ");
+      let cleanFrontDesc = escapeHtml(getSummary(p)).replace(/\\n/g, " ").replace(/\n/g, " ");
       
       // Clean back description (Process line breaks and bold tags)
       let cleanBackDesc = formatBackDescription(p.description);
