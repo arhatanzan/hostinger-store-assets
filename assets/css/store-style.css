@@ -159,22 +159,6 @@ html {
     overflow-x: hidden;
 }
 
-.card-front > *:not(.card-footer),
-.card-back > *:not(.card-footer) {
-    padding: 0 12px;
-}
-
-.card-front .title,
-.card-back .title {
-    padding-top: 12px;
-}
-
-.card-front .thumb,
-.card-back .thumb {
-    padding: 0 !important;
-    margin: 0 -12px 0 -12px;
-}
-
 .card-back {
     background: var(--card-bg);
     transform: rotateY(180deg);
@@ -198,6 +182,8 @@ html {
     color: var(--muted);
     position: relative;
     overflow: hidden;
+    padding: 0 !important;
+    margin: 0 -12px !important;
 }
 
 .thumb img {
@@ -214,6 +200,7 @@ html {
     font-weight: 700;
     margin: 0;
     color: var(--navy);
+    padding: 12px 12px 0 12px;
 }
 
 .title a {
@@ -226,6 +213,7 @@ html {
     color: var(--muted);
     margin: 0;
     line-height: 1.5;
+    padding: 0 12px;
 }
 
 .card-front .desc {
@@ -250,6 +238,7 @@ html {
     gap: 8px;
     flex-wrap: wrap;
     margin-top: 4px;
+    padding: 0 12px;
 }
 
 .tag {
@@ -299,6 +288,7 @@ html {
     gap: 8px;
     align-items: center;
     margin-top: 8px;
+    padding: 0 12px;
 }
 
 .price-old {
