@@ -127,14 +127,14 @@ function initStore() {
       card.className = "card col-12 col-sm-6 col-md-4 col-lg-3";
 
       const fallbackText = escapeHtml(p.thumbText || p.category || itemLabel);
-      let thumbHtml = `<div class="thumb" style="position: relative;">${fallbackText}</div>`;
+      let thumbHtml = `<div class="thumb">${fallbackText}</div>`;
       
       if (p.imageUrl) {
         thumbHtml = `
-          <div class="thumb" style="position: relative;">
+          <div class="thumb">
             <img src="${escapeHtml(p.imageUrl)}" loading="lazy" 
                  onerror="this.style.opacity='0'; this.parentElement.innerHTML='${fallbackText}';" 
-                 style="position: absolute; top:0; left:0; width:100%; height:100%; object-fit:contain; transition: opacity 0.3s;">
+                 style="transition: opacity 0.3s;">
           </div>`;
       }
 
