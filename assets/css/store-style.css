@@ -150,13 +150,29 @@ html {
     grid-area: 1/1;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    padding: 12px 12px 0 12px;
+    gap: 8px;
+    padding: 0;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
+}
+
+.card-front > *:not(.card-footer),
+.card-back > *:not(.card-footer) {
+    padding: 0 12px;
+}
+
+.card-front .title,
+.card-back .title {
+    padding-top: 12px;
+}
+
+.card-front .thumb,
+.card-back .thumb {
+    padding: 0 !important;
+    margin: 0 -12px 0 -12px;
 }
 
 .card-back {
@@ -312,40 +328,37 @@ html {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
-    width: calc(100% + 24px);
+    gap: 12px;
     flex: 0 0 auto;
-    margin-left: -12px;
-    margin-right: -12px;
-    margin-bottom: -12px;
-    padding: 12px;
-    padding-top: 12px;
+    padding: 8px 12px 12px 12px;
     border: none;
-    border-top: none !important;
-    background: var(--card-bg);
+    background: transparent;
 }
 
 .primary-wrap {
     flex: 1 1 auto;
+    display: flex;
+    justify-content: flex-start;
 }
 
 .actions {
     flex: 0 0 auto;
     display: flex;
-    gap: 12px;
-    margin-left: 0;
+    gap: 8px;
+    margin-left: auto;
 }
 
 .download-btn {
     background: var(--accent);
     color: var(--navy);
     border-radius: 8px;
-    padding: 8px 12px;
+    padding: 8px 16px;
     text-decoration: none;
     font-weight: 700;
     font-size: 14px;
     display: inline-flex;
     justify-content: center;
+    white-space: nowrap;
 }
 
 .download-btn.downloaded {
@@ -358,11 +371,11 @@ html {
     background: transparent;
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 8px;
-    padding: 6px 12px;
+    padding: 8px 16px;
     font-size: 14px;
     cursor: pointer;
     color: var(--navy);
-    min-width: 86px;
+    white-space: nowrap;
 }
 
 /* Utilities */
@@ -459,7 +472,17 @@ html {
     .card-front,
     .card-back {
         gap: 8px;
-        padding: 12px;
+        padding: 0;
+    }
+
+    .card-front > *:not(.card-footer),
+    .card-back > *:not(.card-footer) {
+        padding: 0 12px;
+    }
+
+    .card-front .title,
+    .card-back .title {
+        padding-top: 12px;
     }
 
     .thumb {
@@ -495,9 +518,8 @@ html {
 
     .details-btn,
     .back-btn {
-        padding: 4px 8px;
+        padding: 6px 12px;
         font-size: 12px;
-        min-width: 70px;
     }
 
     #goTopBtn {
