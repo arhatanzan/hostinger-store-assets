@@ -124,7 +124,7 @@ function initStore() {
 
     slice.forEach(p => {
       const card = document.createElement("div");
-      card.className = "card col-12 col-sm-6 col-md-4 col-lg-3";
+      card.className = "card col-12 col-sm-6 col-md-3 col-lg-3";
 
       const fallbackText = escapeHtml(p.thumbText || p.category || itemLabel);
       let thumbHtml = `<div class="thumb">${fallbackText}</div>`;
