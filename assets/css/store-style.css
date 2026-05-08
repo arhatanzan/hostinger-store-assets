@@ -138,6 +138,32 @@ html {
   box-shadow: 0 3px 8px rgba(10, 34, 66, 0.06);
 }
 
+/* Reset Bootstrap .row negative margins on prod-header (not handled by .grid reset) */
+.prod-header {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+/* Reset Bootstrap .row > * gutter padding on header col-12 children */
+.prod-header > [class*="col"] {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+/* Neutralise Bootstrap's .card component vars so they don't leak into custom card styles */
+.card {
+    --bs-card-spacer-y: 0;
+    --bs-card-spacer-x: 0;
+    --bs-card-border-width: 0;
+    --bs-card-border-color: transparent;
+    --bs-card-border-radius: 0;
+    --bs-card-cap-padding-y: 0;
+    --bs-card-cap-padding-x: 0;
+    --bs-card-cap-bg: transparent;
+    --bs-card-bg: transparent;
+    --bs-card-height: auto;
+}
+
 /* Grid & Cards - Using Bootstrap's responsive columns */
 .grid {
   margin-top: 18px;
