@@ -96,9 +96,13 @@ function initStore() {
         obj.productUrl = getK("producturl") || getK("articleurl") || getK("link");
         obj.type = getK("type");
         obj.price = getK("price");
+        obj.flag = getK("flag");
 
         return obj;
       });
+
+      // Only show rows explicitly flagged with 1 — anything else (0, blank, missing) is hidden
+      PRODUCTS = PRODUCTS.filter(p => p.flag.toString().trim() === "1");
 
       setupFilters();
       applyFilters();
@@ -122,7 +126,7 @@ function initStore() {
     };
   }
 
-// Restores Line Breaks and Bold Formatting for the Back of the Card
+  // Restores Line Breaks and Bold Formatting for the Back of the Card
   function formatBackDescription(text) {
     if (!text) return "";
 
@@ -277,7 +281,8 @@ function initStore() {
       const allCats = PRODUCTS.flatMap(p => (p.category || "").split(",").map(c => c.trim())).filter(Boolean);
       [...new Set(allCats)].sort().forEach(c => refs.categorySelect.appendChild(new Option(c, c)));
     }
-    const f2Vals = [...new Set(PRODUCTS.map(p => getFilter2Value(p).toLowerCase().trim()))].filter(Boolean);
+    if (refs.filter2Select) {
+      const f2Vals = [...new Set(PRODUCTS.map(p => getFilter2Value(p).toLowerCase().trim()))].filter(Boolean);
       if (filter2GroupBy) {
         // Build year → months map
         const groups = {};
@@ -331,7 +336,7 @@ function initStore() {
       const m1 = !cat || postCats.includes(cat);
       // Year-level match (value prefixed with __year__) or exact month match
       const m2 = !filter2 || (
-        filter2.starsWith("__year__")
+        filter2.startsWith("__year__")
           ? (filter2GroupBy ? filter2GroupBy(getFilter2Value(p).toLowerCase().trim()) === filter2.slice(8) : false)
           : getFilter2Value(p).toLowerCase().trim() === filter2
       );
