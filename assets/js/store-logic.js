@@ -15,6 +15,7 @@ function initStore() {
   const defaultPageSize = _adminPage.pageSize || config.defaultPageSize || "8";
 
   const getFilter2Value = config.getFilter2Value || (() => "");
+  const filter2GroupBy = config.filter2GroupBy || null;
   const getFilter3Value = config.getFilter3Value || null;
   const getFilter4Value = config.getFilter4Value || null;
   const getFilter5Value = config.getFilter5Value || null;
@@ -276,8 +277,33 @@ function initStore() {
       const allCats = PRODUCTS.flatMap(p => (p.category || "").split(",").map(c => c.trim())).filter(Boolean);
       [...new Set(allCats)].sort().forEach(c => refs.categorySelect.appendChild(new Option(c, c)));
     }
-    if (refs.filter2Select) {
-      [...new Set(PRODUCTS.map(p => getFilter2Value(p).toLowerCase().trim()))].filter(Boolean).sort().forEach(v => refs.filter2Select.appendChild(new Option(cap(v), v)));
+    const f2Vals = [...new Set(PRODUCTS.map(p => getFilter2Value(p).toLowerCase().trim()))].filter(Boolean);
+      if (filter2GroupBy) {
+        // Build year → months map
+        const groups = {};
+        f2Vals.forEach(v => {
+          const g = filter2GroupBy(v) || "Other";
+          (groups[g] = groups[g] || []).push(v);
+        });
+        const MONTH_ORDER = ["january","february","march","april","may","june","july","august","september","october","november","december"];
+        // Sort groups descending (newest year first)
+        Object.keys(groups).sort((a, b) => b.localeCompare(a, undefined, { numeric: true })).forEach(g => {
+          const optgroup = document.createElement("optgroup");
+          optgroup.label = g;
+          // Sort months in calendar order within the group
+          groups[g].sort((a, b) => {
+            const ia = MONTH_ORDER.indexOf(a.split(" ")[0]);
+            const ib = MONTH_ORDER.indexOf(b.split(" ")[0]);
+            return ia - ib;
+          });
+          // Year-level selectable option at the top of each group
+          optgroup.appendChild(new Option(`All ${g}`, `__year__${g}`));
+          groups[g].forEach(v => optgroup.appendChild(new Option(cap(v), v)));
+          refs.filter2Select.appendChild(optgroup);
+        });
+      } else {
+        f2Vals.sort().forEach(v => refs.filter2Select.appendChild(new Option(cap(v), v)));
+      }
     }
     if (refs.filter3Select && getFilter3Value) {
       [...new Set(PRODUCTS.map(p => getFilter3Value(p).toLowerCase().trim()))].filter(Boolean).sort().forEach(v => refs.filter3Select.appendChild(new Option(cap(v), v)));
@@ -303,7 +329,12 @@ function initStore() {
       // Comma-separated category: match if ANY of the post's categories equals the selected one
       const postCats = (p.category || "").split(",").map(c => c.trim());
       const m1 = !cat || postCats.includes(cat);
-      const m2 = !filter2 || getFilter2Value(p).toLowerCase().trim() === filter2;
+      // Year-level match (value prefixed with __year__) or exact month match
+      const m2 = !filter2 || (
+        filter2.starsWith("__year__")
+          ? (filter2GroupBy ? filter2GroupBy(getFilter2Value(p).toLowerCase().trim()) === filter2.slice(8) : false)
+          : getFilter2Value(p).toLowerCase().trim() === filter2
+      );
       const m3 = !q || Object.values(p).join(" ").toLowerCase().includes(q);
       const m4 = !filter3 || !getFilter3Value || getFilter3Value(p).toLowerCase().trim() === filter3;
       const m5 = !filter4 || !getFilter4Value || getFilter4Value(p).toLowerCase().trim() === filter4;

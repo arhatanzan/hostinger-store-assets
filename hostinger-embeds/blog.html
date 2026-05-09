@@ -43,9 +43,11 @@
   window.APP_CONFIG = {
     pageKey: "blog",    // Matches the key in admin-config.js
 
-    // filter2Select — populated with unique "date" values (e.g. "May 2026")
-    // Values are stored and compared as-is (case-insensitive trimmed)
+    // filter2Select — full "Month YYYY" date value used for filtering
     getFilter2Value: (p) => (p["date"] || "").toString().trim(),
+
+    // Gropus the Dates dropdwon by year (optgroup), with months listed inside each group
+    filter2GroupBy: (v) => { const m = v.match(/\b((?:19|20)\d{2})\b/); return m ? m[1] : ""; },
 
     // filter3Select — read-time buckets; thresholds set in admin-config.js > blog.readTimeBuckets
     getFilter3Value: (p) => {
