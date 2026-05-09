@@ -102,6 +102,11 @@ html {
     background: transparent;
 }
 
+.search input:focus {
+    outline: none;
+    box-shadow: none;
+}
+
 .controls-row {
     display: flex;
     gap: 10px;
