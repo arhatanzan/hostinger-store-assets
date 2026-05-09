@@ -30,6 +30,7 @@ html {
     font-family: system-ui, Calibri, Arial, sans-serif;
     background: var(--page-bg);
     color: var(--navy);
+    overflow-x: hidden;
 }
 
 /* Layout & Controls */
@@ -70,15 +71,16 @@ html {
 }
 
 .prod-controls .search {
-    width: auto !important;
+    width: 100% !important;
 }
 
 .prod-controls .controls-row {
-    width: auto !important;
+    /* Do NOT override Bootstrap w-100 – let the row be full-width so flex-wrap always works */
     display: flex;
     gap: 8px;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     align-items: center;
+    justify-content: flex-end;   /* right-align controls on desktop */
 }
 
 .search {
@@ -111,7 +113,7 @@ html {
     display: flex;
     gap: 10px;
     align-items: center;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     justify-content: flex-start;
     flex: 1 1 auto;
 }
@@ -559,6 +561,34 @@ html {
     }
 }
 
+@media (max-width: 768px) {
+    .prod-controls {
+        align-items: stretch;
+    }
+
+    .prod-controls .controls-row {
+        justify-content: flex-start;   /* left-align on mobile */
+    }
+
+    .select {
+        flex: 1 1 auto;
+        min-width: 90px;
+    }
+
+    .card-footer {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .primary-wrap {
+        flex: 1 1 auto;
+    }
+
+    .actions {
+        flex: 0 0 auto;
+    }
+}
+
 @media (max-width: 575px) {
     .grid {
         grid-template-columns: 1fr !important;
@@ -581,9 +611,9 @@ html {
         min-width: 0;
     }
 
-    .controls-row {
-        justify-content: flex-start;
-        gap: 8px;
+    .select {
+        flex: 1 1 auto;
+        min-width: 90px;
     }
 
     .select,
@@ -604,9 +634,14 @@ html {
         padding: 0;
     }
 
-    .card-front > *:not(.card-footer),
-    .card-back > *:not(.card-footer) {
+    .card-front > *,
+    .card-back > * {
         padding: 0 12px;
+    }
+
+    .card-front .card-footer,
+    .card-back .card-footer {
+        padding-bottom: 12px;
     }
 
     .card-front .title,
